@@ -1,0 +1,253 @@
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>login or sign up</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="/views/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/views/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/views/css/form-elements.css">
+    <link rel="stylesheet" href="/views/css/style.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <!-- Favicon and touch icons -->
+    <link rel="shortcut icon" href="/ico/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png">
+
+
+
+<style media="screen">
+        * {
+            font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: bolder;
+        }
+
+        .row {
+            margin: 0;
+        }
+
+        .navbar-default {
+            height: 100px;
+            padding-top: 23px;
+            padding-left: 70px;
+            border: 0;
+            border-radius: 5 !important;
+            background: #2a2f59;
+        }
+
+        .navbar-default .navbar-brand {
+            text-transform: uppercase;
+            font-size: 2em;
+            text-decoration: italic;
+            color: white;
+            transition: color 0.4s ease;
+            cursor: pointer;
+        }
+
+        .navbar-default .navbar-brand:hover {
+            color: black;
+            transition: color 0.4s ease;
+        }
+
+        .card {
+            padding: 10px;
+            padding-top: 20px;
+            background: #2a2f59;
+            border: 1px #c8c3ff solid;
+            border-radius: 5px;
+            text-align: center;
+            margin: 12px 3% 1% 3%;
+            height: 200px;
+            width: calc(80% * (1/3));
+        }
+
+        .card .card-title {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .card .card-link {
+            margin-top: 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 90%;
+            border: 2px solid black;
+            color: grey;
+            background: transparent;
+            transition: background-color 0.4s ease;
+        }
+
+        .card .card-link:hover {
+            color: white;
+            background: #2a2f59;
+            transition: background-color 0.4s ease;
+        }
+
+        .form-container {
+            height: 400px;
+            border-left: 1px solid gray;
+            padding-left: 30px;
+        }
+
+        .form-control {
+            width: 90%;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <!-- Top content -->
+  <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">home  </a>
+            </div>
+        </div>
+    </nav>
+    <div class="top-content">
+
+        <div class="inner-bg">
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="description">
+                        <h3>
+                            <strong>Sign up and customize your own Portfolio</strong>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-5">
+
+                    <div class="form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Login and open your Portfolio</h3>
+                                <p>Enter your username and password to log in:
+                                </p>
+                            </div>
+                            <div class="form-top-right">
+                                <i class="fa fa-key"></i>
+                            </div>
+                        </div>
+                        <div class="form-bottom">
+                            <form  action="/loginStudent" method="POST" class="login-form">
+                                <div class="form-group">
+                                    <label class="sr-only" for="form-username">username</label>
+                                    <input type="text" required=true name="username" placeholder="username..." class="form-username form-control" id="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="form-password">Password</label>
+                                    <input type="password" required=true name="password" placeholder="Password..." class="form-password form-control" id="password">
+                                </div>
+                                <button type="submit" class="btn">Sign in!</button>
+                            </form>
+
+                            <h2> <%= trial%> </h2>
+                        </div>
+                    </div>
+
+
+
+                  
+                    <div class="col-sm-3"></div>
+
+                    <div class="col-sm-19">
+
+                        <div class="form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Sign up now</h3>
+                                    <p>Fill in the form below </p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-pencil"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom" >
+
+                                <form role="form" action="/registerStudent" method="post" class="registration-form" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="username">username</label>
+                                        <input type="text" required=true name="username" placeholder="username..." class="form-username form-control" id="username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-password">Password</label>
+                                        <input type="password" required=true name="password" placeholder="Password..." class="form-password form-control" id="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-email">name</label>
+                                        <input type="text" required=true name="name" placeholder="Name..." class="form-username form-control" id="name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-email"> your portfolio description</label>
+                                        <input type="text" required=true name="description" placeholder="Write a shor description about your profile..." class="form-username form-control" id="description">
+                                    </div>
+                                     <div class="form-group">
+                                        <label class="sr-only" for="form-email"> your profile picture</label>
+                                        <input type="file" name="profile_pic" placeholder="profile picture" class="form-username form-control" id="profile_pic">
+                                    </div>
+                                    <button type="submit" class="btn">Sign me up!</button>
+                                    <h2> <%= signupfail%> </h2>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="footer-border"></div>
+
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Javascript -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/scripts.js"></script>
+
+    <!--[if lt IE 10]>
+            <script src="/js/placeholder.js"></script>
+        <![endif]-->
+
+</body>
+
+</html>
