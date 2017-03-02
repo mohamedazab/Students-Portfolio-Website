@@ -223,12 +223,12 @@ exports.updateProject = function(req, res) {
 exports.searchProjects = function(req, res) {
 
 
-    var projectName = req.body.projectName;
+    var projectName = req.body.project_name;
 
-    project.find({ 'projectName': projectName }, function(err, Foundproject) {
+    Project.find({ 'project_name': { $regex: ".*" + projectName + ".*" } }, function(err, projects) {
         if (err) res.send(err.message);
         else
-            res.send(Foundproject);
+            res.render('search', { projects });
 
     })
 };

@@ -17,7 +17,7 @@ var pic = upload2.single('profile_pic');
 router.get('/loginOrSignup', studentController.renderLoginPage);
 router.post('/loginStudent', studentController.loginverify);
 router.post('/registerStudent', pic, studentController.createStudent);
-
+router.post('/search', projectController.searchProjects);
 
 //my portfolio page
 router.get('/myPortfolio', projectController.getMyProjects);
