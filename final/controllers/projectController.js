@@ -11,8 +11,6 @@ var fs = require('fs');
 
 ///duplicates
 exports.createProject = function(req, res, type) {
-    console.log(req.body);
-    console.log(req.body.checkbox);
     if (!req.session || !req.session.student) {
         res.redirect('/loginOrSignup');
         return;
@@ -54,7 +52,7 @@ exports.createProject = function(req, res, type) {
         else {
 
             if (projects.length > 0) {
-                console.log("heha");
+                console.log("duplicate project error");
                 res.redirect('/myPortfolio?already=already exists');
 
                 return;
@@ -64,7 +62,7 @@ exports.createProject = function(req, res, type) {
                     if (err) res.send(err.message);
                     else {
                         res.redirect('/myPortfolio');
-                        console.log("new project  for\n " + project + "\n added ");
+                        console.log("the new project \n " + project + "\n added ");
                     }
                 });
 
@@ -75,23 +73,7 @@ exports.createProject = function(req, res, type) {
 
 };
 
-/*exports.getAllProjects = function(req, res) {
-    //find and loop on students get highest 2
-    console.log("get all projects   " + req.session);
 
-
-    Project.find(function(err, projects) {
-
-        if (err)
-            res.send(err.message);
-        else {
-            if (!req.session || !req.session.student)
-                res.render('index', { projects });
-            else
-                res.render('loggedIn', { projects });
-        }
-    })
-};*/
 
 
 exports.getMyProjects = function(req, res) {
@@ -109,7 +91,7 @@ exports.getMyProjects = function(req, res) {
     var username = req.session.student.username
     var profilePic = req.session.student.profile_pic;
     var description = req.session.student.description;
-    console.log(profilePic);
+    console.log("your profile pic : " + profilePic);
     Project.find({ 'username': username }, function(err, projects) {
 
         if (err)
@@ -129,12 +111,12 @@ exports.viewProfile = function(req, res) {
         if (err) res.send(err.message);
         else
         if (foundStudent) {
-            console.log(foundStudent);
+            console.log("I found :" + foundStudent.username);
             profilePic = foundStudent.profile_pic;
             description = foundStudent.description;
 
-            console.log("yes   " + profilePic);
-            console.log(description);
+            console.log("his profile pic : " + profilePic);
+            console.log("his profile description :" + description);
         } else {
 
         }
@@ -178,7 +160,7 @@ exports.deleteProject = function(req, res) {
 
     var username = req.session.student.username;
     var tmp_path = "";
-    console.log("ready");
+    console.log("try delete");
     Project.findOne({ 'username': username }, function(err, foundproject) {
         console.log("i found " + foundproject);
         tmp_path = foundproject.data;
@@ -189,7 +171,6 @@ exports.deleteProject = function(req, res) {
         'username': username,
         'project_name': req.query.project_name
     }, function(err, projects) {
-        //console.log(projects);
         if (err)
             res.send(err.message);
         else {
@@ -202,6 +183,20 @@ exports.deleteProject = function(req, res) {
     })
 
 };
+
+exports.searchProjects = function(req, res) {
+
+
+    var projectName = req.body.project_name;
+
+    Project.find({ 'project_name': { $regex: ".*" + projectName + ".*" } }, function(err, projects) {
+        if (err) res.send(err.message);
+        else
+            res.render('search', { projects });
+
+    })
+};
+
 /*
 
 exports.updateProject = function(req, res) {
@@ -220,15 +215,20 @@ exports.updateProject = function(req, res) {
 };
 
 */
-exports.searchProjects = function(req, res) {
+/*exports.getAllProjects = function(req, res) {
+    //find and loop on students get highest 2
+    console.log("get all projects   " + req.session);
 
 
-    var projectName = req.body.project_name;
+    Project.find(function(err, projects) {
 
-    Project.find({ 'project_name': { $regex: ".*" + projectName + ".*" } }, function(err, projects) {
-        if (err) res.send(err.message);
-        else
-            res.render('search', { projects });
-
+        if (err)
+            res.send(err.message);
+        else {
+            if (!req.session || !req.session.student)
+                res.render('index', { projects });
+            else
+                res.render('loggedIn', { projects });
+        }
     })
-};
+};*/

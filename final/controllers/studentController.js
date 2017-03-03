@@ -22,25 +22,17 @@ exports.viewImage = function(req, res) {
 }
 exports.createStudent = function(req, res, pic) {
     var target_path = "";
-    // console.log(req.file);
     if (!req.file)
-        target_path = 'profilePics/31246-purple-lights-in-space-1920x1080-space-wallpaper.jpg';
+        target_path = 'profilePics/unknown.jpg';
     else {
-        // console.log(req.file);
-        // var tmp_path = req.file.path;
-        // var target_path = 'profilePics/' + req.file.originalname;
-        //var src = fs.createReadStream(tmp_path);
-        //var dest = fs.createWriteStream(target_path);
-        //src.pipe(dest);
-        //fs.unlinkSync(tmp_path);
+
         target_path = req.file.path;
-        console.log("hi the target is" + target_path);
     }
     let student = new Student(req.body);
     student.profile_pic = target_path;
 
-    //console.log(target_path);
-    console.log("create student" + student);
+
+    console.log(" try create student" + student);
 
     student.save(function(err, student) {
         if (err) {
@@ -48,7 +40,7 @@ exports.createStudent = function(req, res, pic) {
             res.redirect('/loginOrSignup?signupfail=signup failed');
         } else {
             req.session.student = student;
-            console.log("new student " + student.username + " registered ");
+            console.log("success " + student.username + " registered ");
             res.redirect('/myPortfolio');
         }
     })
@@ -62,7 +54,6 @@ exports.renderLoginPage = function(req, res) {
     if (req.query.signupfail)
         signupfail = req.query.signupfail;
 
-    console.log(signupfail + " hi " + signupfail);
     res.render('loginOrSignup', { trial, signupfail });
 };
 exports.logout = function(req, res) {
@@ -72,7 +63,6 @@ exports.logout = function(req, res) {
 };
 
 exports.loginverify = function(req, res) {
-    //res.send(projects);
     var username = req.body.username;
     var password = req.body.password;
 
@@ -83,7 +73,6 @@ exports.loginverify = function(req, res) {
             req.session.student = foundStudent;
             console.log("login sucessful " + req.session.student);
             res.redirect('/myPortfolio');
-            //create session
         } else {
             console.log("wrong username or passward");
             res.redirect('/loginOrSignup?fail=login failed');
@@ -95,9 +84,6 @@ exports.loginverify = function(req, res) {
 };
 
 exports.getAllStudents = function(req, res) {
-
-    ///pictures
-
 
     Student.find(function(err, St) {
 
@@ -119,8 +105,6 @@ exports.getAllStudents = function(req, res) {
         for (var i = start; i < St.length && i < start + 10; i++) {
             students.push(St[i]);
         }
-        console.log(students.length);
-        console.log(St.length);
         if (err)
             res.send(err.message);
         else {
