@@ -23,6 +23,10 @@ exports.createProject = function(req, res, type) {
         }
         return;
     }
+    if (!req.file && !req.body.link) {
+        res.redirect('/myPortfolio?already=please upload a file or type a link');
+        return;
+    }
     var project_name = req.body.project_name;
     var username = req.session.student.username;
     var project;
@@ -49,7 +53,7 @@ exports.createProject = function(req, res, type) {
              src.pipe(dest);
              fs.unlinkSync(tmp_path);*/
             var target_path = req.file.path;
-            console.log("your project path" + target_path);
+            ///   console.log("your project path" + target_path);
             project = new Project({ 'username': username, 'project_name': project_name, 'data': target_path });
         }
     }
@@ -61,17 +65,17 @@ exports.createProject = function(req, res, type) {
         else {
 
             if (projects.length > 0) {
-                console.log("duplicate project error");
+                // console.log("duplicate project error");
                 res.redirect('/myPortfolio?already=already exists');
 
                 return;
             } else {
-                console.log("good to go");
+                // console.log("good to go");
                 project.save(function(err, project) {
                     if (err) res.send(err.message);
                     else {
                         res.redirect('/myPortfolio');
-                        console.log("the new project \n " + project + "\n added ");
+                        //      console.log("the new project \n " + project + "\n added ");
                     }
                 });
 
@@ -90,7 +94,7 @@ exports.getMyProjects = function(req, res) {
     /////////pictures
 
     if (!req.session || !req.session.student) {
-        console.log("not logged in");
+        //   console.log("not logged in");
         res.redirect('loginOrSignup');
         return;
 
@@ -101,7 +105,7 @@ exports.getMyProjects = function(req, res) {
     var username = req.session.student.username
     var profilePic = req.session.student.profile_pic;
     var description = req.session.student.description;
-    console.log("your profile pic : " + profilePic);
+    // console.log("your profile pic : " + profilePic);
     Project.find({ 'username': username }, function(err, projects) {
 
         if (err)
@@ -121,12 +125,12 @@ exports.viewProfile = function(req, res) {
         if (err) res.send(err.message);
         else
         if (foundStudent) {
-            console.log("I found :" + foundStudent.username);
+            //  console.log("I found :" + foundStudent.username);
             profilePic = foundStudent.profile_pic;
             description = foundStudent.description;
 
-            console.log("his profile pic : " + profilePic);
-            console.log("his profile description :" + description);
+            //  console.log("his profile pic : " + profilePic);
+            //  console.log("his profile description :" + description);
         } else {
 
         }
@@ -162,7 +166,7 @@ exports.deleteProject = function(req, res) {
 
     //check iff username and password matches
     if (!req.session || !req.session.student || !req.session.student.username || !req.query.project_name) {
-        console.log("not logged in");
+        //  console.log("not logged in");
         res.redirect('loginOrSignup');
         return;
 
@@ -170,11 +174,15 @@ exports.deleteProject = function(req, res) {
 
     var username = req.session.student.username;
     var tmp_path = "";
-    console.log("try delete " + username + " for " + req.query.project_name);
+    //  console.log("try delete " + username + " for " + req.query.project_name);
     Project.findOne({ 'username': username, 'project_name': req.query.project_name }, function(err, foundproject) {
-        console.log("i found " + foundproject);
+        //    console.log("i found " + foundproject);
+        if (foundproject == null) {
+            res.redirect('/');
+            return;
+        }
         tmp_path = foundproject.data;
-        console.log("try to unlink the file " + tmp_path);
+        //   console.log("try to unlink the file " + tmp_path);
 
         Project.remove({
             'username': username,
@@ -183,12 +191,12 @@ exports.deleteProject = function(req, res) {
             if (err)
                 res.send(err.message);
             else {
-                console.log("check substr " + projects);
+                //    console.log("check substr " + projects);
                 if (tmp_path.substring(0, 7) == "uploads") {
-                    console.log("condition ok");
+                    //        console.log("condition ok");
                     fs.unlinkSync(tmp_path);
                 }
-                console.log("redirect after delete");
+                //    console.log("redirect after delete");
                 res.redirect('/myPortfolio');
             }
         });
@@ -200,11 +208,14 @@ exports.deleteProject = function(req, res) {
 
 exports.searchProjects = function(req, res) {
 
-
+    if (!req.body.project_name) {
+        res.redirect('/');
+        return;
+    }
     var projectName = req.body.project_name;
     var result = "";
     Project.find({ 'project_name': { $regex: ".*" + projectName + ".*" } }, function(err, projects) {
-        if (err) res.send(err.message);
+        if (err) res.redirect('/');
         else {
             if (projects.length == 0) result = "No results";
 

@@ -28,19 +28,23 @@ exports.createStudent = function(req, res, pic) {
 
         target_path = req.file.path;
     }
+    if (!req.body) {
+        res.redirect('/loginOrSignup?signupfail=signup failed');
+        return;
+    }
     let student = new Student(req.body);
     student.profile_pic = target_path;
 
 
-    console.log(" try create student" + student);
+    //  console.log(" try create student" + student);
 
     student.save(function(err, student) {
         if (err) {
-            console.log("already exists");
+            //       console.log("already exists");
             res.redirect('/loginOrSignup?signupfail=signup failed');
         } else {
             req.session.student = student;
-            console.log("success " + student.username + " registered ");
+            //     console.log("success " + student.username + " registered ");
             res.redirect('/myPortfolio');
         }
     })
@@ -48,7 +52,7 @@ exports.createStudent = function(req, res, pic) {
 
 exports.renderLoginPage = function(req, res) {
     if (req.session.student && req.session.student.username) {
-        console.log("logged in already");
+        //   console.log("logged in already");
         res.redirect('/myPortfolio');
         return;
     }
@@ -69,18 +73,22 @@ exports.logout = function(req, res) {
 };
 
 exports.loginverify = function(req, res) {
+    if (!req.body || !req.body.username || !req.body.password) {
+        res.redirect('/loginOrSignup?fail=login failed');
+        return;
+    }
     var username = req.body.username;
     var password = req.body.password;
 
     Student.findOne({ 'username': username, 'password': password }, function(err, foundStudent) {
-        if (err) res.send(err.message);
+        if (err) res.redirect('/loginOrSignup?fail=login failed');
         else
         if (foundStudent) {
             req.session.student = foundStudent;
-            console.log("login sucessful " + req.session.student);
+            //       console.log("login sucessful " + req.session.student);
             res.redirect('/myPortfolio');
         } else {
-            console.log("wrong username or passward");
+            //      console.log("wrong username or passward");
             res.redirect('/loginOrSignup?fail=login failed');
         }
 
