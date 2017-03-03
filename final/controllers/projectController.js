@@ -16,13 +16,20 @@ exports.createProject = function(req, res, type) {
         return;
 
     }
+    if (!req.body.project_name) {
+        res.redirect('\myPortfolio');
+        if (req.file) {
+            fs.unlinkSync(req.file.path);
+        }
+        return;
+    }
     var project_name = req.body.project_name;
     var username = req.session.student.username;
     var project;
     if (req.body.checkbox && !req.body.link) {
         if (req.file)
             fs.unlinkSync(req.file.path);
-        res.redirect('/myPortfolio');
+        res.redirect('/myPortfolio?already=please upload a file or type a link');
         return;
     } else
     if (req.body.checkbox && req.body.link) {
@@ -30,8 +37,9 @@ exports.createProject = function(req, res, type) {
             fs.unlinkSync(req.file.path);
         project = new Project({ 'username': username, 'project_name': project_name, 'data': req.body.link });
     } else {
-        if (!req.file) {
-            res.redirect('/myPortfolio');
+        if (!req.body.checkbox && !req.file) {
+            res.redirect('/myPortfolio?already=please upload a file or type a link ');
+            return;
         } else {
             var tmp_path = req.file.path;
 
@@ -41,6 +49,7 @@ exports.createProject = function(req, res, type) {
              src.pipe(dest);
              fs.unlinkSync(tmp_path);*/
             var target_path = req.file.path;
+            console.log("your project path" + target_path);
             project = new Project({ 'username': username, 'project_name': project_name, 'data': target_path });
         }
     }
@@ -83,6 +92,7 @@ exports.getMyProjects = function(req, res) {
     if (!req.session || !req.session.student) {
         console.log("not logged in");
         res.redirect('loginOrSignup');
+        return;
 
     }
     var already = "";
@@ -151,7 +161,7 @@ exports.deleteProject = function(req, res) {
 
 
     //check iff username and password matches
-    if (!req.session || !req.session.student || !req.query.project_name) {
+    if (!req.session || !req.session.student || !req.session.student.username || !req.query.project_name) {
         console.log("not logged in");
         res.redirect('loginOrSignup');
         return;
@@ -160,27 +170,31 @@ exports.deleteProject = function(req, res) {
 
     var username = req.session.student.username;
     var tmp_path = "";
-    console.log("try delete");
-    Project.findOne({ 'username': username }, function(err, foundproject) {
+    console.log("try delete " + username + " for " + req.query.project_name);
+    Project.findOne({ 'username': username, 'project_name': req.query.project_name }, function(err, foundproject) {
         console.log("i found " + foundproject);
         tmp_path = foundproject.data;
+        console.log("try to unlink the file " + tmp_path);
+
+        Project.remove({
+            'username': username,
+            'project_name': req.query.project_name
+        }, function(err, projects) {
+            if (err)
+                res.send(err.message);
+            else {
+                console.log("check substr " + projects);
+                if (tmp_path.substring(0, 7) == "uploads") {
+                    console.log("condition ok");
+                    fs.unlinkSync(tmp_path);
+                }
+                console.log("redirect after delete");
+                res.redirect('/myPortfolio');
+            }
+        });
 
     });
 
-    Project.remove({
-        'username': username,
-        'project_name': req.query.project_name
-    }, function(err, projects) {
-        if (err)
-            res.send(err.message);
-        else {
-            if (tmp_path.substring(0, 7) == "uploads") {
-                fs.unlinkSync(tmp_path);
-            }
-
-            res.redirect('/myPortfolio');
-        }
-    })
 
 };
 
@@ -188,11 +202,14 @@ exports.searchProjects = function(req, res) {
 
 
     var projectName = req.body.project_name;
-
+    var result = "";
     Project.find({ 'project_name': { $regex: ".*" + projectName + ".*" } }, function(err, projects) {
         if (err) res.send(err.message);
-        else
-            res.render('search', { projects });
+        else {
+            if (projects.length == 0) result = "No results";
+
+            res.render('search', { projects, result });
+        }
 
     })
 };

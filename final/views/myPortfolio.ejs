@@ -56,7 +56,7 @@
             color: white;
             font-size: 2em;
             font-weight: bold;
-            text-transform: capitalize;
+            
         }
 
         .card .card-link {
@@ -135,7 +135,7 @@
                 <form class="form" method="POST" action="/createProject" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="project_name">Project Name</label>
-                        <input name = "project_name" type="text" class="form-control" id="project_name" placeholder="project name">
+                        <input name = "project_name" type="text" required=true class="form-control" id="project_name" placeholder="project name">
                     </div>
                     <div class="form-group">
                         <label for="data">upload an image</label>

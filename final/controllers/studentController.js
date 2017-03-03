@@ -47,6 +47,12 @@ exports.createStudent = function(req, res, pic) {
 };
 
 exports.renderLoginPage = function(req, res) {
+    if (req.session.student && req.session.student.username) {
+        console.log("logged in already");
+        res.redirect('/myPortfolio');
+        return;
+    }
+
     var trial = " ";
     var signupfail = "";
     if (req.query.fail)
@@ -90,6 +96,11 @@ exports.getAllStudents = function(req, res) {
         var pageSize = 10;
         var currentPage = 1;
         var countPages = Math.ceil(St.length / 10);
+        var students = [];
+        if (St.length == 0) {
+            countPages = 1;
+            res.render('index', { students, currentPage, countPages });
+        }
         if (req.query.page) {
             currentPage = req.query.page;
         }
@@ -100,7 +111,7 @@ exports.getAllStudents = function(req, res) {
             res.redirect('/?page=' + val);
             return;
         }
-        var students = [];
+
         var start = (currentPage - 1) * 10;
         for (var i = start; i < St.length && i < start + 10; i++) {
             students.push(St[i]);
